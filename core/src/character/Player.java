@@ -12,11 +12,11 @@ public class Player {
     private float y;
     private Texture img;
 
-    public Player(){
+    public Player(String texturePath){
         id = idCount++;
         x = 400;
         y = 300;
-        img = new Texture("player.png");
+        img = new Texture(texturePath);
     }
 
     public void setX(float x) {
@@ -43,7 +43,5 @@ public class Player {
     public void dispose(){
         img.dispose();
     }
-    public String toString(){
-        return id + "," + x + "," + y;
-    }
+    public String toString(){return id + "," + x + "," + y + "\n";}
 }

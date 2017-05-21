@@ -12,14 +12,11 @@ import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+
+
 
 public class MyGdxGame extends ApplicationAdapter {
 	private OrthographicCamera camera;
@@ -39,8 +36,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		camera = new OrthographicCamera();
 		viewport = new ExtendViewport(800, 600, camera);
 		batch = new SpriteBatch();
-		me = new Player();
-		enemy = new Player();
+		me = new Player("player.png");
+		enemy = new Player("enemy.png");
 
 	}
 
@@ -61,21 +58,31 @@ public class MyGdxGame extends ApplicationAdapter {
 		me.move();
 		if (isPlayer && inGame) {
 			if (socket != null){
-				System.out.println("no problem with the socki :)");
+				String dataLine;
+				String[] data;
 			try {
-				System.out.println("Client: Data: " + me.toString().getBytes(Charset.forName("UTF-8")));
-				if (socket.getOutputStream() != null)
-					System.out.println("The socki's output is not null.");
-				socket.getOutputStream().write(me.toString().getBytes(Charset.forName("UTF-8")));
+				System.out.println("Client: Data: " + me.toString());
+				socket.getOutputStream().write(me.toString().getBytes());
+				System.out.println("Client: Server's address:" + socket.getRemoteAddress());
+				BufferedReader buffer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				System.out.println("Client: Buffer ready.");
+				dataLine = buffer.readLine();
+				System.out.println("Client: DataLine:" + dataLine);
+				data = dataLine.split(",");
+				System.out.println("Client: Data:" + data[0] + "," + data[1] + "," + data[2]);
+				enemy.setX(Float.valueOf(data[1]));
+				enemy.setY(Float.valueOf(data[2]));
+				System.out.println("Client: Information received, enemy's new state:" + enemy.toString());
+
+
 				System.out.println("Client : Data sent.");
 			} catch (Exception e){
 				System.out.println("Client: Unable to send data.");
 				e.printStackTrace();
 				}
 			}
-
 		}
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		me.draw(batch);
@@ -99,34 +106,46 @@ public class MyGdxGame extends ApplicationAdapter {
 
 			@Override
 			public void run() {
+				System.out.println("Started game as a Host.");
 				ServerSocketHints serverSocketHint = new ServerSocketHints();
 
 				serverSocketHint.acceptTimeout = 99999999;
 
 				ServerSocket serverSocket = Gdx.net.newServerSocket(Net.Protocol.TCP, "192.168.0.100", 9021, serverSocketHint);
-
-
+				socket = serverSocket.accept(new SocketHints());
+				System.out.println("Server: Client connected.");
+				String dataLine;
+				String[] data;
 				while(true){
 					try {
-						socket = serverSocket.accept(null);
-						System.out.println("Server: Client connected");
-						BufferedReader buffer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-						System.out.println("kész a buffer");
-						String[] data = buffer.readLine().split(",");
-						System.out.println("Server: data:" + buffer.readLine());
-						enemy.setX(Float.valueOf(data[1]));
-						enemy.setY(Float.valueOf(data[2]));
-						System.out.println("infó jött!!!!!!4négy!");
+						if(socket.isConnected()) {
+							System.out.println("Server: Client's address:" + socket.getRemoteAddress());
+							BufferedReader buffer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+							System.out.println("Server: Buffer ready.");
+							dataLine = buffer.readLine();
+							System.out.println("Server: DataLine:" + dataLine);
+							data = dataLine.split(",");
+							System.out.println("Server: Data:" + data[0] + "," + data[1] + "," + data[2]);
+							enemy.setX(Float.valueOf(data[1]));
+							enemy.setY(Float.valueOf(data[2]));
+							System.out.println("Server: Information received, enemy's new state:" + enemy.toString());
+							socket.getOutputStream().write(me.toString().getBytes());
+							System.out.println("Server: Host information sent.");
+						} else {
+							System.out.println("Server: Client lost.");
+						}
 					} catch ( Exception e){
 						e.printStackTrace();
-						System.out.println("Nem lett jó");
+						System.out.println("Server: Something wrong.");
 					}
+
 				}
 			}
 		}).start();
 	}
 	private void connectToHost(){
-		socketHints.connectTimeout = 4000;
+		System.out.println("Started game as a Peer.");
+		socketHints.connectTimeout = 999999999;
 		//create the socket and connect to the server entered in the text box ( x.x.x.x format ) on port 9021
 
 		try {
