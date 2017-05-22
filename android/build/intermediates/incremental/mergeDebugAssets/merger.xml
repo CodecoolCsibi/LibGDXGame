@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="/home/csibi/IdeaProjects/LibGDXTest/android/assets"><file name="player.png" path="/home/csibi/IdeaProjects/LibGDXTest/android/assets/player.png"/></source></dataSet><dataSet config="debug"><source path="/home/csibi/IdeaProjects/LibGDXTest/android/src/debug/assets"/></dataSet></merger>

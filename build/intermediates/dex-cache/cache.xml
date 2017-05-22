@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/home/csibi/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-ai/1.8.0/ec30677d8ab1a8b8aa4b853c5f4e4b1361f50bf5/gdx-ai-1.8.0.jar"
+        jumboMode="false"
+        revision="24.0.0"
+        sha1="ec30677d8ab1a8b8aa4b853c5f4e4b1361f50bf5">
+        <dex dex="/home/csibi/IdeaProjects/LibGDXTest/android/build/intermediates/pre-dexed/debug/gdx-ai-1.8.0_58fabf9080910f32f0b69eaef490602987fcfcf2.jar" />
+    </item>
+    <item
+        jar="/home/csibi/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.9.6/47d1e9b890e364ec28f128e9bb3b9a12a94c164/gdx-1.9.6.jar"
+        jumboMode="false"
+        revision="24.0.0"
+        sha1="047d1e9b890e364ec28f128e9bb3b9a12a94c164">
+        <dex dex="/home/csibi/IdeaProjects/LibGDXTest/android/build/intermediates/pre-dexed/debug/gdx-1.9.6_001ace261c2503ea095898e4a571cd39d4df9eb4.jar" />
+    </item>
+    <item
+        jar="/home/csibi/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-box2d/1.9.6/c249ef4060a4fada952f278455c8f7b9cba3c18a/gdx-box2d-1.9.6.jar"
+        jumboMode="false"
+        revision="24.0.0"
+        sha1="c249ef4060a4fada952f278455c8f7b9cba3c18a">
+        <dex dex="/home/csibi/IdeaProjects/LibGDXTest/android/build/intermediates/pre-dexed/debug/gdx-box2d-1.9.6_f9eaf24e3d380ad5630a65949733a2db29cc8731.jar" />
+    </item>
+    <item
+        jar="/home/csibi/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-controllers-android/1.9.6/adb89baaccb577c5ed558c3c1f94253e0f1fd2cf/gdx-controllers-android-1.9.6.jar"
+        jumboMode="false"
+        revision="24.0.0"
+        sha1="adb89baaccb577c5ed558c3c1f94253e0f1fd2cf">
+        <dex dex="/home/csibi/IdeaProjects/LibGDXTest/android/build/intermediates/pre-dexed/debug/gdx-controllers-android-1.9.6_63756b61f373b5db50ab9137d33fdad89535fb0d.jar" />
+    </item>
+    <item
+        jar="/home/csibi/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-controllers/1.9.6/ea1fd4884be631d9b7cd0f496b1ab39e31eb434b/gdx-controllers-1.9.6.jar"
+        jumboMode="false"
+        revision="24.0.0"
+        sha1="ea1fd4884be631d9b7cd0f496b1ab39e31eb434b">
+        <dex dex="/home/csibi/IdeaProjects/LibGDXTest/android/build/intermediates/pre-dexed/debug/gdx-controllers-1.9.6_00b18b9440edcd2deb464ebce2099a3a378916b7.jar" />
+    </item>
+    <item
+        jar="/home/csibi/IdeaProjects/LibGDXTest/core/build/libs/core-1.0.jar"
+        jumboMode="false"
+        revision="24.0.0"
+        sha1="701bd692d8a091badd7203607e652f0797e2cc11">
+        <dex dex="/home/csibi/IdeaProjects/LibGDXTest/android/build/intermediates/pre-dexed/debug/core-1.0_86aca6bca066593e3687cd0ce83c995e8116ae86.jar" />
+    </item>
+    <item
+        jar="/home/csibi/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-android/1.9.6/57c2831c870743712b808384187ea856e541878f/gdx-backend-android-1.9.6.jar"
+        jumboMode="false"
+        revision="24.0.0"
+        sha1="57c2831c870743712b808384187ea856e541878f">
+        <dex dex="/home/csibi/IdeaProjects/LibGDXTest/android/build/intermediates/pre-dexed/debug/gdx-backend-android-1.9.6_ae392e877525642c181754d0aea0773e6623f5fa.jar" />
+    </item>
+
+</items>
