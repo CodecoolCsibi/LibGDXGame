@@ -111,7 +111,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
 				serverSocketHint.acceptTimeout = 99999999;
 
-				ServerSocket serverSocket = Gdx.net.newServerSocket(Net.Protocol.TCP, "192.168.122.1", 9021, serverSocketHint);
+				ServerSocket serverSocket = Gdx.net.newServerSocket(Net.Protocol.TCP, "10.5.20.130", 9021, serverSocketHint);
 				socket = serverSocket.accept(new SocketHints());
 				System.out.println("Server: Client connected.");
 				String dataLine;
