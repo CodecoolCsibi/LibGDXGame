@@ -17,7 +17,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 
-
 public class MyGdxGame extends ApplicationAdapter {
 	private OrthographicCamera camera;
 	private ExtendViewport viewport;
@@ -111,7 +110,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
 				serverSocketHint.acceptTimeout = 99999999;
 
-				ServerSocket serverSocket = Gdx.net.newServerSocket(Net.Protocol.TCP, "10.5.20.130", 9021, serverSocketHint);
+				ServerSocket serverSocket = Gdx.net.newServerSocket(Net.Protocol.TCP, "10.5.20.255", 9021, serverSocketHint);
 				socket = serverSocket.accept(new SocketHints());
 				System.out.println("Server: Client connected.");
 				String dataLine;
@@ -150,7 +149,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		//create the socket and connect to the server entered in the text box ( x.x.x.x format ) on port 9021
 
 		try {
-			socket = Gdx.net.newClientSocket(Net.Protocol.TCP, "10.5.20.130", 9021, socketHints);
+			socket = Gdx.net.newClientSocket(Net.Protocol.TCP, "10.5.20.255", 9021, socketHints);
 			System.out.println("connection established");
 		} catch (Exception e) {
 			System.exit(1);
