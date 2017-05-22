@@ -150,7 +150,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		//create the socket and connect to the server entered in the text box ( x.x.x.x format ) on port 9021
 
 		try {
-			socket = Gdx.net.newClientSocket(Net.Protocol.TCP, "192.168.122.1", 9021, socketHints);
+			socket = Gdx.net.newClientSocket(Net.Protocol.TCP, "10.5.20.130", 9021, socketHints);
 			System.out.println("connection established");
 		} catch (Exception e) {
 			System.exit(1);
