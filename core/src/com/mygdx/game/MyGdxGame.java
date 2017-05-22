@@ -137,6 +137,7 @@ public class MyGdxGame extends ApplicationAdapter {
 					} catch ( Exception e){
 						e.printStackTrace();
 						System.out.println("Server: Something wrong.");
+						System.exit(1);
 					}
 
 				}
@@ -152,6 +153,7 @@ public class MyGdxGame extends ApplicationAdapter {
 			socket = Gdx.net.newClientSocket(Net.Protocol.TCP, "192.168.122.1", 9021, socketHints);
 			System.out.println("connection established");
 		} catch (Exception e) {
+			System.exit(1);
 			System.out.println("no connection");
 		}
 	}
