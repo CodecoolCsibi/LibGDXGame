@@ -111,7 +111,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
 				serverSocketHint.acceptTimeout = 99999999;
 
-				ServerSocket serverSocket = Gdx.net.newServerSocket(Net.Protocol.TCP, "192.168.0.100", 9021, serverSocketHint);
+				ServerSocket serverSocket = Gdx.net.newServerSocket(Net.Protocol.TCP, "10.5.20.130", 9999, serverSocketHint);
 				socket = serverSocket.accept(new SocketHints());
 				System.out.println("Server: Client connected.");
 				String dataLine;
@@ -124,13 +124,17 @@ public class MyGdxGame extends ApplicationAdapter {
 							System.out.println("Server: Buffer ready.");
 							dataLine = buffer.readLine();
 							System.out.println("Server: DataLine:" + dataLine);
-							data = dataLine.split(",");
-							System.out.println("Server: Data:" + data[0] + "," + data[1] + "," + data[2]);
-							enemy.setX(Float.valueOf(data[1]));
-							enemy.setY(Float.valueOf(data[2]));
-							System.out.println("Server: Information received, enemy's new state:" + enemy.toString());
-							socket.getOutputStream().write(me.toString().getBytes());
-							System.out.println("Server: Host information sent.");
+							if (dataLine != null) {
+								data = dataLine.split(",");
+								System.out.println("Server: Data:" + data[0] + "," + data[1] + "," + data[2]);
+								enemy.setX(Float.valueOf(data[1]));
+								enemy.setY(Float.valueOf(data[2]));
+								System.out.println("Server: Information received, enemy's new state:" + enemy.toString());
+								socket.getOutputStream().write(me.toString().getBytes());
+								System.out.println("Server: Host information sent.");
+							} else {
+								System.exit(1);
+							}
 						} else {
 							System.out.println("Server: Client lost.");
 						}
@@ -150,7 +154,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		//create the socket and connect to the server entered in the text box ( x.x.x.x format ) on port 9021
 
 		try {
-			socket = Gdx.net.newClientSocket(Net.Protocol.TCP, "192.168.0.100", 9021, socketHints);
+			socket = Gdx.net.newClientSocket(Net.Protocol.TCP, "10.5.20.130", 9999, socketHints);
 			System.out.println("connection established");
 		} catch (Exception e) {
 			System.exit(1);
