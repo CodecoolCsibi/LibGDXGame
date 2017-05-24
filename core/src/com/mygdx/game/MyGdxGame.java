@@ -78,7 +78,6 @@ public class MyGdxGame extends ApplicationAdapter {
 			} catch (Exception e){
 				System.out.println("Client: Unable to send data.");
 				e.printStackTrace();
-				System.exit(1);
 				}
 			}
 		}
@@ -157,8 +156,8 @@ public class MyGdxGame extends ApplicationAdapter {
 			socket = Gdx.net.newClientSocket(Net.Protocol.TCP, "10.5.20.130", 9999, socketHints);
 			System.out.println("connection established");
 		} catch (Exception e) {
-			System.exit(1);
 			System.out.println("no connection");
+			System.exit(1);
 		}
 	}
 }
