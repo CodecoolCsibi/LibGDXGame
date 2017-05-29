@@ -6,17 +6,43 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Player {
-    private static int idCount = 0;
-    private int id;
+
+
+    private String id;
     private float x;
     private float y;
     private Texture img;
-
-    public Player(String texturePath){
-        id = idCount++;
-        x = 400;
-        y = 300;
-        img = new Texture(texturePath);
+    public Player(String team) {
+        this.id = "0";
+        this.x = 400;
+        this.y = 300;
+        switch (team) {
+            case "RED":
+                img = new Texture("red.png");
+                break;
+            case "BLUE":
+                img = new Texture("blue.png");
+                break;
+            default:
+                img = new Texture("blue.png");
+                break;
+        }
+    }
+    public Player(String id, float x, float y, String team){
+        this.id = id;
+        this.x = x;
+        this.y = y;
+        switch (team) {
+            case "RED":
+                img = new Texture("red.png");
+                break;
+            case "BLUE":
+                img = new Texture("blue.png");
+                break;
+            default:
+                img = new Texture("blue.png");
+                break;
+        }
     }
 
     public void setX(float x) {
@@ -25,6 +51,14 @@ public class Player {
 
     public void setY(float y) {
         this.y = y;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+       return id;
     }
 
     public void move(){
