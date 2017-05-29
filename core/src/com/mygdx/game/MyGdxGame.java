@@ -4,39 +4,45 @@ import character.Player;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Net;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.net.ServerSocket;
-import com.badlogic.gdx.net.ServerSocketHints;
-import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
 
 
 public class MyGdxGame extends ApplicationAdapter {
 	private OrthographicCamera camera;
 	private ExtendViewport viewport;
 	private SpriteBatch batch;
+
 	private boolean inGame = false;
 	private Socket socket;
-	private boolean isHost = false;
-	private boolean isPlayer = false;
+	private HashMap<String, Player> players;
 	private Player me;
-	private Player enemy;
 
-	private SocketHints socketHints = new SocketHints();
+	private String serverURI = "http://localhost:8080";
+	private String team = "blue";
 
 	@Override
 	public void create () {
 		camera = new OrthographicCamera();
 		viewport = new ExtendViewport(800, 600, camera);
 		batch = new SpriteBatch();
-		me = new Player("player.png");
-		enemy = new Player("enemy.png");
+		players = new HashMap<>();
+		connectToHost();
+		configSocketEvents();
+
+
 
 	}
 
@@ -44,53 +50,26 @@ public class MyGdxGame extends ApplicationAdapter {
 	public void render () {
 		if(!inGame) {
 			if (Gdx.input.isKeyPressed(Input.Keys.H)){
-				startAsHost();
 				inGame = true;
-				isHost = true;
 			} else if(Gdx.input.isKeyPressed(Input.Keys.P)){
-				connectToHost();
+
 				inGame = true;
-				isPlayer = true;
 			}
 
-		}
-		me.move();
-		if (isPlayer && inGame) {
-			if (socket != null){
-				String dataLine;
-				String[] data;
-			try {
-				System.out.println("Client: Data: " + me.toString());
-				socket.getOutputStream().write(me.toString().getBytes());
-				System.out.println("Client: Server's address:" + socket.getRemoteAddress());
-				BufferedReader buffer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				System.out.println("Client: Buffer ready.");
-				dataLine = buffer.readLine();
-				System.out.println("Client: DataLine:" + dataLine);
-				data = dataLine.split(",");
-				System.out.println("Client: Data:" + data[0] + "," + data[1] + "," + data[2]);
-				enemy.setX(Float.valueOf(data[1]));
-				enemy.setY(Float.valueOf(data[2]));
-				System.out.println("Client: Information received, enemy's new state:" + enemy.toString());
-
-
-				System.out.println("Client : Data sent.");
-			} catch (Exception e){
-				System.out.println("Client: Unable to send data.");
-				e.printStackTrace();
-				}
-			}
 		}
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		me.draw(batch);
-		enemy.draw(batch);
+		for(HashMap.Entry<String, Player> entry : players.entrySet()){
+			entry.getValue().draw(batch);
+		}
 		batch.end();
 	}
 	
 	@Override
 	public void dispose () {
+		super.dispose();
+		socket.close();
 		batch.dispose();
 	}
 
@@ -100,64 +79,87 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch.setProjectionMatrix(camera.combined);
 	}
 
-	private void startAsHost(){
-		new Thread(new Runnable(){
-
-			@Override
-			public void run() {
-				System.out.println("Started game as a Host.");
-				ServerSocketHints serverSocketHint = new ServerSocketHints();
-
-				serverSocketHint.acceptTimeout = 99999999;
-
-				ServerSocket serverSocket = Gdx.net.newServerSocket(Net.Protocol.TCP, "10.5.20.130", 9999, serverSocketHint);
-				socket = serverSocket.accept(new SocketHints());
-				System.out.println("Server: Client connected.");
-				String dataLine;
-				String[] data;
-				while(true){
-					try {
-						if(socket.isConnected()) {
-							System.out.println("Server: Client's address:" + socket.getRemoteAddress());
-							BufferedReader buffer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-							System.out.println("Server: Buffer ready.");
-							dataLine = buffer.readLine();
-							System.out.println("Server: DataLine:" + dataLine);
-							if (dataLine != null) {
-								data = dataLine.split(",");
-								System.out.println("Server: Data:" + data[0] + "," + data[1] + "," + data[2]);
-								enemy.setX(Float.valueOf(data[1]));
-								enemy.setY(Float.valueOf(data[2]));
-								System.out.println("Server: Information received, enemy's new state:" + enemy.toString());
-								socket.getOutputStream().write(me.toString().getBytes());
-								System.out.println("Server: Host information sent.");
-							} else {
-								System.exit(1);
-							}
-						} else {
-							System.out.println("Server: Client lost.");
-						}
-					} catch ( Exception e){
-						e.printStackTrace();
-						System.out.println("Server: Something wrong.");
-						System.exit(1);
-					}
-
-				}
-			}
-		}).start();
-	}
 	private void connectToHost(){
 		System.out.println("Started game as a Peer.");
-		socketHints.connectTimeout = 999999999;
-		//create the socket and connect to the server entered in the text box ( x.x.x.x format ) on port 9021
 
 		try {
-			socket = Gdx.net.newClientSocket(Net.Protocol.TCP, "10.5.20.130", 9999, socketHints);
+			socket = IO.socket(serverURI);
+			socket.connect();
+			socket.emit("team", team);
 			System.out.println("connection established");
 		} catch (Exception e) {
 			System.out.println("no connection");
 			System.exit(1);
 		}
+	}
+
+	public void configSocketEvents(){
+		socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+			@Override
+			public void call(Object... args) {
+				Gdx.app.log("SocketIO", "Connected");
+			}
+		}).on("socketID", new Emitter.Listener() {
+			@Override
+			public void call(Object... args) {
+				JSONObject data = (JSONObject) args[0];
+				try{
+					String id = data.getString("id");
+					Gdx.app.log("SocketIO", "My id:" + id);
+				} catch (JSONException e){
+					Gdx.app.log("SocketIO", "Error getting id");
+					e.printStackTrace();
+					System.exit(1);
+				}
+			}
+		}).on("newPlayer", new Emitter.Listener() {
+			@Override
+			public void call(Object... args) {
+				JSONObject newPlayer = (JSONObject) args[0];
+				try{
+					String id = newPlayer.getString("id");
+					players.put(id, new Player((newPlayer.getString("team").equals("blue"))? "blue.png" : "red.png"));
+					Gdx.app.log("SocketIO", "New player connected:" + id);
+				} catch (JSONException e){
+					Gdx.app.log("SocketIO", "Error getting new player's id");
+					e.printStackTrace();
+					System.exit(1);
+				}
+			}
+		}).on("playerDisconnected", new Emitter.Listener() {
+			@Override
+			public void call(Object... args) {
+				JSONObject data = (JSONObject) args[0];
+				try {
+					String id = data.getString("id");
+					players.remove(id);
+					Gdx.app.log("SocketIO", "Player disconnected: " + id);
+				} catch (JSONException e) {
+					Gdx.app.log("SocketIO", "Error getting  disconnected player's id.");
+					e.printStackTrace();
+					System.exit(1);
+				}
+			}
+		}).on("getPlayers", new Emitter.Listener() {
+			@Override
+			public void call(Object... args) {
+				JSONArray playersData = (JSONArray) args[0];
+				try{
+					for (int i=0; i < playersData.length(); i++) {
+						JSONObject playerJSONObject = playersData.getJSONObject(i);
+						String id = playerJSONObject.getString("id");
+						float x = BigDecimal.valueOf(playerJSONObject.getDouble("x")).floatValue();
+						float y = BigDecimal.valueOf(playerJSONObject.getDouble("y")).floatValue();
+						String team = playerJSONObject.getString("team");
+						players.put(id, new Player(id, x, y, team));
+						Gdx.app.log("SocketIO", "Player Created: " + id);
+					}
+				}catch (JSONException e){
+					Gdx.app.log("SocketIO",  "Getting players failed.");
+					e.printStackTrace();
+					System.exit(1);
+				}
+			}
+		});
 	}
 }
