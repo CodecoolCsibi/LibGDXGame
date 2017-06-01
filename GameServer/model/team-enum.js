@@ -10,4 +10,5 @@ class Team {
 Team.RED = new Team('RED');
 Team.BLUE = new Team('BLUE');
 
+module.exports = Team;
 
